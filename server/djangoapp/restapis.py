@@ -38,6 +38,9 @@ def get_request(url, **kwargs):
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
 
+def post_request(url, json_payload, **kwargs):
+    response = requests.post(url, json=json_payload, **kwargs)
+    return response
 
 # Create a get_dealers_from_cf method to get dealers from a cloud function
 # def get_dealers_from_cf(url, **kwargs):
@@ -131,17 +134,34 @@ def analyze_review_sentiments(text):
     
     return(label)
 
-def post_request(url, payload, **kwargs):
-    status_code = None
-    print(kwargs)
-    print("POST to {} ".format(url))
-    print(payload)
-    try:
-        response = requests.post(url, params=kwargs, json=payload, headers={'Content-Type': 'application/json'},
-                                    auth=HTTPBasicAuth('apikey','api_key'))
-    except:
-        status_code = response.status_code
-    print("With status {} ".format(status_code))
-    json_data = json.loads(response.text)
-    return json_data
+#def post_request(url, payload, **kwargs):
+#    status_code = None
+#    print(kwargs)
+#    print("POST to {} ".format(url))
+#    print(payload)
+#    try:
+#        response = requests.post(url, params=kwargs, json=payload, headers={'Content-Type': 'application/json'},
+#                                    auth=HTTPBasicAuth('apikey','api_key'))
+#    except:
+#        status_code = response.status_code
+#    print("With status {} ".format(status_code))
+#    json_data = json.loads(response.text)
+#    return json_data
 
+def get_single_dealers(**kwargs):
+    results = {}
+    # Call get_request with a URL parameter
+    url = "https://us-south.functions.appdomain.cloud/api/v1/web/4faf8dbd-d6b2-4192-af16-f96ff1a3f43f/dealership-package/get-dealership"
+    if 'dealer_id' in kwargs:
+        json_result = get_request(url, id=kwargs["dealer_id"])
+    else:
+        json_result = get_request(url)
+    if json_result:
+        dealers = json_result[0]
+        # Creates a dealer Object from the JSON result
+        dealer_obj = CarDealer(address=dealers["address"], city=dealers["city"], full_name=dealers["full_name"],
+                                id=dealers["id"], lat=dealers["lat"], long=dealers["long"],
+                                short_name=dealers["short_name"],
+                                st=dealers["st"], zip=dealers["zip"])
+        results["dealer"] = dealer_obj
+    return results

@@ -14,48 +14,94 @@
 </head>
 
     <body>
-     This is the index page of your Django app!
     <!--Add a nav bar here -->
-    <nav class="navbar navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">Best Cars Dealership</a>
+          <a class="navbar-brand" href="{% url 'djangoapp:index' %}">Best Car Dealership</a>
+          <div class="collapse navbar-collapse navbar-header">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 navbar-left">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'djangoapp:about' %}">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'djangoapp:index' %}">Catalog</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'djangoapp:contact' %}">Contact</a>
+              </li>
+            </ul>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+            <li>
+                <a class="btn btn-link" href="#">{{ user.first_name }} ({{ user.username }})</a>
+                <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
+            </li>
+            {% else %}
+            <li>
+                <form class="form-inline" action = "{% url 'djangoapp:login' %}" method = "post">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" class="form-control form-control focus-ring py-1 px-2 text-decoration-none border rounded-2" placeholder="Username" name="username" >
+                        <input type="password" class="form-control form-control focus-ring py-1 px-2 text-decoration-none border rounded-2" placeholder="Password" name="psw" >
+                        <button class="btn btn-primary" type="submit">Login</button>
+                        <a class="btn btn-link" href="{% url 'djangoapp:registration' %}">Sign Up</a>
+                    </div>
+                </form>
+            </li>
+            {% endif %}
             </div>
-            <ul class="nav navbar-nav navbar-right">
-                {% if user.is_authenticated %}
-                <li>
-                    <a class="btn btn-link" href="about">About Us</a>
-
-                    <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
-                    <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
-                </li>
-                {% else %}
-                <li>
-                    <a class="btn btn-link" href="about">About Us</a>
-                    <form class="form-inline" action="{% url 'djangoapp:login' %}" method="post">
-                        {% csrf_token %}
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Username" name="username" >
-                            <input type="password" class="form-control" placeholder="Password" name="psw" >
-                            <button class="btn btn-primary" type="submit">Login</button>
-                            <a class="btn btn-link" href="{% url 'djangoapp:registration' %}">Sign Up</a>
-                        </div>
-                    </form>
-                </li>
-                {% endif %}
-            </ul>
+        </ul>
+        {% if message %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{message}}
+            <button class="btn-outline-warning" data-bs-dismiss="alert">X</button>
         </div>
-    </nav>
+        {% endif %}
+        </div>
+      </nav>
     <!--Add a dealer table here -->
-    <footer>
-        <div class="container-fluid bg-light footer">
-            <ul class="footer">
-                <li>
-                    <a class="btn btn-link" href="contact">Contact Us</a>
-                </li>
+    <div class = "container">
+        <table class = "table table-hover" data-filter-control='true' id='table'>
+            <thead data-filter-control='select'> 
+                <tr>
+                    <th>ID</td>
+                    <th>Dealer Name</td>
+                    <th>City</td>
+                    <th>Address</td>
+                    <th>Zip</td>
+                    <th data-field='state' data-filter-control='select'>State</td>    
+                </tr>   
+            </thead>
+            <tbody>
+                {% for dealership in dealership_list %}
+                <tr>
+                    <td>{{dealership.id}}</td>
+                    <td><a href = "{% url 'djangoapp:dealer_details' dealership.id %}">{{dealership.full_name}}</td>
+                    <td>{{dealership.city}} </td>
+                    <td>{{dealership.address}}</td>
+                    <td>{{dealership.zip}}</td>
+                    <td>{{dealership.st}} </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+            <p class="col-md-4 mb-0 text-body-secondary">© 2023 Best Cars Dealership, INC</p>
+        
+            <ul class="nav col-md-4 justify-content-end">
+                <li class="nav-item"><a href="{% url 'djangoapp:about' %}" class="nav-link px-2 text-body-secondary">About Us</a></li>
+                <li class="nav-item"><a href="{% url 'djangoapp:index' %}" class="nav-link px-2 text-body-secondary">Catalog</a></li>
+                <li class="nav-item"><a href="{% url 'djangoapp:contact' %}" class="nav-link px-2 text-body-secondary">Contact Us</a></li>
             </ul>
-        </div>
-    </footer>
+        </footer>
+    </div>
     </body>
-
+    <script>
+        $(function() {
+          $('#table').bootstrapTable()
+        })
+      </script>
 </html>

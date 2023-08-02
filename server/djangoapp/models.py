@@ -17,6 +17,7 @@ class CarMake(models.Model):
 
 
 class CarModel(models.Model):
+    car_id = models.IntegerField(default=1, primary_key=True)
     make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
     Name = models.CharField(null=False, max_length=2000,default="name", )
     Dealerid = models.IntegerField(default=0)

@@ -1,24 +1,87 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Dealership Review</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-        <link href="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.css" rel="stylesheet">
-        <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.js"></script>
-        <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
-    
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <title>Dealership Review</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link href="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+
+</head>
     <body>
-        <div class="container ">
-            <h1 class="">About Us</h1>
-        </div>
-        <div class="container">
-            <h1>
-                Welcome to Best Cars dealership, home to the best cars in North America. We sell domestic and imported cars at reasonable prices.
-            </h1>
-        </div>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="{% url 'djangoapp:index' %}">Best Car Dealership</a>
+              <div class="collapse navbar-collapse navbar-header">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 navbar-left">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'djangoapp:about' %}">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'djangoapp:index' %}">Catalog</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'djangoapp:contact' %}">Contact</a>
+                  </li>
+                </ul>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                {% if user.is_authenticated %}
+                <li>
+                    <a class="btn btn-link" href="#">{{ user.first_name }} ({{ user.username }})</a>
+                    <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
+                </li>
+                {% else %}
+                <li>
+                    <form class="form-inline" action = "{% url 'djangoapp:login' %}" method = "post">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input type="text" class="form-control form-control focus-ring py-1 px-2 text-decoration-none border rounded-2" placeholder="Username" name="username" >
+                            <input type="password" class="form-control form-control focus-ring py-1 px-2 text-decoration-none border rounded-2" placeholder="Password" name="psw" >
+                            <button class="btn btn-primary" type="submit">Login</button>
+                            <a class="btn btn-link" href="{% url 'djangoapp:registration' %}">Sign Up</a>
+                        </div>
+                    </form>
+                </li>
+                {% endif %}
+                </div>
+            </ul>
+            {% if message %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {{message}}
+                <button class="btn-outline-warning" data-bs-dismiss="alert">X</button>
+            </div>
+            {% endif %}
+            </div>
+          </nav>
+
+          <div class="my-5">
+            <div class="p-5 text-center bg-body-tertiary">
+              <div class="container py-5">
+                <h1 class="text-body-emphasis">Welcome to Best Cars Dealership</h1>
+                <h2>All Inclusive Place to Find the Best Dealership Near You!</h2>
+                <p class="col-lg-8 mx-auto lead">
+                    Let us help you find the dealer that will work for you.
+                    We'll help you decide to either GAS or PASS!
+                </p>
+              </div>
+            </div>
+          </div>
+
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+            <p class="col-md-4 mb-0 text-body-secondary">© 2023 Best Cars Dealership, INC</p>
+        
+        
+            <ul class="nav col-md-4 justify-content-end">
+            <li class="nav-item"><a href="{% url 'djangoapp:about' %}" class="nav-link px-2 text-body-secondary">About Us</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Catalog</a></li>
+            <li class="nav-item"><a href="{% url 'djangoapp:contact' %}" class="nav-link px-2 text-body-secondary">Contact Us</a></li>
+            </ul>
+        </footer>
+        </div>  
     </body>
 </html>
